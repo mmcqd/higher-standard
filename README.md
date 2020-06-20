@@ -1,5 +1,5 @@
-# Higher-Kinded
-Higher kinded polymorphism (sort of) in SML!
+# Higher Standard
+Higher kinded polymorphism in Standard ML!
 
 An attempt at translating a little bit of https://github.com/ocamllabs/higher into SML.
 
