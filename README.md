@@ -35,7 +35,7 @@ structure Functor =
     { fmap : ('a -> 'b) -> ('a,'f) app -> ('b,'f) app }
   )
 ```
-The first 5 type variables are intented for use anywhere in the functions of your type class, but you don't have to use all of them. The final `'f` is intented to be the type the class is constraining. If you need more than 5 type variables to write your class, the code can be rewritten to use as many as you like. Now `Functor.into` turns a record into a Functor instance, whose fields we can access with `Functor.prj`, i.e. `Functor.prj#fmap instance`. This allows writing fairly idiomatic functions with type class arguments:
+The first 5 type variables are intended for use anywhere in the functions of your type class, but you don't have to use all of them. The final `'f` is intended to be the type the class is constraining. If you need more than 5 type variables to write your class, the code can be rewritten to use as many as you like. Now `Functor.into` turns a record into a Functor instance, whose fields we can access with `Functor.prj`, i.e. `Functor.prj#fmap instance`. This allows writing fairly idiomatic functions with type class arguments:
 ```sml
 (*  <$ : 'f Functor.cls -> 'a -> ('b,'f) app -> ('a,'f) app *)
 fun <$ cls x = Functor.prj#fmap cls (const x)
