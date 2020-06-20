@@ -25,10 +25,10 @@ fun will_work (cls : (int,int,'f) covfunctor) f = #fmap cls (fn x => x+1) f
 ```
 But we're still limited to only mapping over structures containing ints. `Unsafe.cast` to the rescue!
 ```sml
-(*  actually_polymorphic : ('_x,'_x,'f) covfunctor -> (int,'f) app -> (int,'f) app * (string,'f) app
+(*  actually_polymorphic : ('_x,'_x,'f) covfunctor -> (int,'f) app -> (int,'f) app * (string,'f) app *)
 fun actually_polymorphic (cls : ('_x,'_x,'f) covfunctor) f =
   let val ('a,'b) cls : ('a,'b,'f) covfunctor = Unsafe.cast cls in
   (#fmap cls (fn x => x+1) f, #fmap cls (fn x => "nice") f)
   end
 ```
-The `'_x` business is quite janky. Basically these type variables are meant to be ignored, but we can't leave their positions blank. The `('a,'b) cls` syntax lets us bind brand new type variables at our new `cls` declaration, so we throw away the `'_x`s, and force SML to accept the covfunctor instance as being fully polymorphic. Of course, this is all completely un-typesafe, and if you pass a covfunctor instance that can't actually work polymorphically, this could fail at runtime. Check out the code for definitions of functor, applicative and monad, and a couple simple functions using type class constraints.
+The `'_x` business is quite janky. Basically these type variables are meant to be ignored, but we can't leave their positions blank. The `('a,'b) cls` syntax lets us explicitly bind brand new type variables at our new `cls` declaration (even if `'a` and `'b` have been used elsewhere), so we ignore the `'_x`s, and force SML to accept the covfunctor instance as being fully polymorphic. Of course, this is all completely un-typesafe, and if you pass a covfunctor instance that can't actually work polymorphically, this could fail at runtime. Check out the code for definitions of functor, applicative and monad, and a couple simple functions using type class constraints.
