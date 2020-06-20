@@ -25,7 +25,7 @@ fun will_work (cls : (int,int,'f) covfunctor) f = #fmap cls (fn x => x+1) f
 ```
 But we're still limited to only mapping over structures containing ints. `Unsafe.cast` to the rescue!
 ```sml
-(*  actually_polymorphic : ('_x,'_x,'f) covfunctor -> (int,'f) app -> (int,'f) app * (string,'f) app
+(*  actually_polymorphic : ('_x,'_x,'f) covfunctor -> (int,'f) app -> (int,'f) app * (string,'f) app *)
 fun actually_polymorphic (cls : ('_x,'_x,'f) covfunctor) f =
   let val ('a,'b) cls : ('a,'b,'f) covfunctor = Unsafe.cast cls in
   (#fmap cls (fn x => x+1) f, #fmap cls (fn x => "nice") f)
