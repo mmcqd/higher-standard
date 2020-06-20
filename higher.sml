@@ -17,6 +17,8 @@ sig
   end
 end
 
+
+
 structure Higher :> HIGHER =
 struct
   type ('x,'f) app = unit
@@ -129,9 +131,11 @@ fun addM (cls : ('_x,'_x,'m) monad) a b =
     #pure cls $ x+y))
   end
 
+fun on (h,f) x y = h (f x) (f y)
+infix on
 
-val SOME 3 = OptionH.out $ addM monadOption (OptionH.into $ SOME 1) (OptionH.into $ SOME 2)
-val NONE   = OptionH.out $ addM monadOption (OptionH.into NONE) (OptionH.into $ SOME 2)
+val SOME 3 = OptionH.out $ (addM monadOption on OptionH.into) (SOME 1) (SOME 2)
+val NONE   = OptionH.out $ (addM monadOption on OptionH.into) NONE (SOME 2)
 
 
 
