@@ -40,11 +40,13 @@ end
 fun $ (f,x) = f x
 infixr $
 
+open Either
+
 type ('a,'b) app = ('a,'b) Higher.app
 
 structure ListH = Higher.Mk1 (type 'a t = 'a list)
 structure OptionH = Higher.Mk1 (type 'a t = 'a option)
-structure EitherH = Higher.Mk2 (type ('a,'b) t = ('a,'b) Either.either)
+structure EitherH = Higher.Mk2 (type ('a,'b) t = ('a,'b) either)
 
 type ('a,'b,'f) covfunctor = {fmap : ('a -> 'b) -> ('a,'f) app -> ('b,'f) app}
 
@@ -61,12 +63,12 @@ type ('a,'b,'m) monad =
     bind : ('a,'m) app -> ('a -> ('b,'m) app) -> ('b,'m) app
   }
 
-val cofList : unit -> ('a,'b,ListH.s) covfunctor =
-  fn () => {fmap = fn f => ListH.into o List.map f o ListH.out}
+val covfunctorList : ('a,'b,ListH.s) covfunctor =
+  {fmap = fn f => ListH.into o List.map f o ListH.out}
 
-val monadOption : unit -> ('a,'b,OptionH.s) monad =
-  fn () => { fmap = fn f => OptionH.into o Option.map f o OptionH.out,
-             pure = OptionH.into o SOME,
+val monadOption : ('a,'b,OptionH.s) monad =
+           { fmap = fn f => OptionH.into o Option.map f o OptionH.out,
+             pure = fn x => OptionH.into o SOME $ x,
              ap   = (fn f => fn x =>
                       case (OptionH.out f,OptionH.out x) of
                          (SOME f, SOME x) => OptionH.into o SOME $ f x
@@ -74,7 +76,39 @@ val monadOption : unit -> ('a,'b,OptionH.s) monad =
              bind = (fn x => fn f =>
                       case OptionH.out x of
                         SOME x => f x
-                      | _      => OptionH.into NONE) }
+                      | _      => OptionH.into NONE) 
+           }
+
+
+val monadEither : ('a,'b, ('c,EitherH.s) app) monad =
+           { fmap = (fn f => fn x => 
+                      case EitherH.out x of
+                        INL y => EitherH.into o INL $ f y
+                      | INR y => EitherH.into $ INR y),
+             pure = fn x => EitherH.into o INL $ x,
+             ap   = (fn f => fn x =>
+                      case (EitherH.out f,EitherH.out x) of
+                        (INL f,INL x) => EitherH.into o INL $ f x
+                      | (INL _,INR x) => EitherH.into $ INR x 
+                      | (INR f,_)     => EitherH.into $ INR f),
+             bind = (fn x => fn f =>
+                      case EitherH.out x of
+                        INL x => f x
+                      | INR x => EitherH.into $ INR x)
+                      
+           }
+
+val monadList : ('a,'b,ListH.s) monad =
+           { fmap = fn x => #fmap covfunctorList x,
+             pure = fn x => ListH.into [x],
+             ap   = fn x => let
+                      fun ap fs xs = 
+                        case ListH.out fs of
+                          []    => ListH.into []
+                        | f::fs => ListH.into (List.map f (ListH.out xs) @ (ListH.out $ ap (ListH.into fs) xs))
+                     in ap end x,
+             bind = fn x => fn f => ListH.into $ List.concatMap (ListH.out o f) (ListH.out x)
+            }
 
 
 
@@ -96,8 +130,8 @@ fun addM (cls : ('_x,'_x,'m) monad) a b =
   end
 
 
-val SOME 3 = OptionH.out $ addM (monadOption()) (OptionH.into $ SOME 1) (OptionH.into $ SOME 2)
-val NONE   = OptionH.out $ addM (monadOption()) (OptionH.into NONE) (OptionH.into $ SOME 2)
+val SOME 3 = OptionH.out $ addM monadOption (OptionH.into $ SOME 1) (OptionH.into $ SOME 2)
+val NONE   = OptionH.out $ addM monadOption (OptionH.into NONE) (OptionH.into $ SOME 2)
 
 
 
