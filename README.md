@@ -5,7 +5,7 @@ An attempt at translating some of https://github.com/ocamllabs/higher into SML.
 
 Higher kinded polymorphism is implemented through defunctionalization. Instead of promoting type variables to
 allow abstraction over type constructors (anything of kind k -> * ), we _demote_ type constructor application 
-with the type `('x,'f) app`, which represents `'a 'f`. In more concrete terms: `(int,list) app == int list`. To achieve this, we make `('a,'f) app` abstract, and then provide functors to to construct a defunctionalized type constructor for a given real type constructor. These are Higher.Mk1 and Higher.Mk2, which can be easily generalized to MkN if desired. A central use case of abstracting over type constructors is allowing haskell style type class constraints on them. The original paper uses the ocaml object system to represent type classes, but SML has no such system. It does however have records. Ideally, we'd like to be able to do this:
+with the type `('x,'f) app`, which represents `'a 'f`. In more concrete terms: `(int,list) app == int list`. To achieve this, we make `('a,'f) app` abstract, and then provide functors to construct a defunctionalized type constructor for a given real type constructor. These are Higher.Mk1 and Higher.Mk2, which can be easily generalized to MkN if desired. A central use case of abstracting over type constructors is allowing haskell style type class constraints on them. The original paper uses the ocaml object system to represent type classes, but SML has no such system. It does however have records. Ideally, we'd like to be able to do this:
 ```sml
 type 'f Functor = { fmap : forall 'a 'b . ('a -> 'b) -> ('a,'f) app -> ('b,'f) app }
 ```
@@ -13,7 +13,7 @@ Unfortunately, SML lacks any first class polymorphism, so all type variable must
 ```sml
 type ('a,'b,'f) Functor = { fmap : ('a -> 'b) -> ('a,'f) app -> ('b,'f) app }
 ```
-Not only does this not look as nice, it causes issues when try to use type class instances. For example:
+Not only does this not look as nice, it causes issues when trying to use type class instances. For example:
 ```sml
 (*  won't_work : ('a,'b,'f) Functor -> (int,'f) app -> (int,'f) app *) 
 fun won't_work (cls : ('a,'b,'f) Functor) f = #fmap cls (fn x => x+1) f
