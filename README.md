@@ -49,3 +49,4 @@ fun when cls b m = if b then m else Monad.prj#pure cls ()
 (*  unless : 'm Monad.cls -> bool -> (unit,'m) app -> (unit,'m) app *)
 fun unless cls b m = when cls (not b) m
 ```
+Check out `lens.sml` for an implementation of van Laarhoven style lenses!
