@@ -16,6 +16,9 @@ struct
     prj#bind cls b (fn y =>
       prj#pure cls $ x+y))
     end
+  
+  fun when cls b m = if b then m else Monad.prj#pure cls ()
+  fun unless cls b m = when cls (not b) m
 
   fun on (h,f) x y = h (f x) (f y)
   infix on
