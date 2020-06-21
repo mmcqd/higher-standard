@@ -6,4 +6,5 @@ is
 
   higher.sig
   higher.sml
+  typeclass.sml
   examples.sml
