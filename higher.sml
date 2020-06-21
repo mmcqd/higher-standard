@@ -22,7 +22,7 @@ struct
 
   functor MkCls (type ('a,'b,'c,'d,'e,'P) base) =
   struct
-    type 'P cls = (unit,unit,unit,unit,unit,'P) base
+    type 'P cls = unit
     open B
     fun prj f c = f (out c)
   end
