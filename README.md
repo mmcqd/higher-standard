@@ -28,7 +28,7 @@ sig
   val prj  : (('a,'b,'c','d,'e,'P) base -> 'f) -> 'P cls -> 'f
 end
 ```
-Unfortunately this can be used to create objects that don't act like type classes, but it's meant to be use like so:
+Unfortunately this can be used to create objects that don't act like type classes, but it's meant to be used like so:
 ```sml
 structure Functor = 
   Higher.MkCls (type ('a,'b,'c,'d,'e,'f) base = 
