@@ -36,6 +36,10 @@ struct
   
   val L_2 : ('x * 'a,'x * 'b,'a,'b,'f) lens =
     fn cls => fn f => fn (x,a) => Functor.prj#fmap cls (fn b => (x,b)) (f a) 
- 
+
+  val 3 = view L_1 (3,4)
+  val 4 = view L_2 (3,4)
+  val ("3",4) = over Int.toString L_1 (3,4)
+  val (3,5) = set 5 L_2 (3,4)
 
 end
