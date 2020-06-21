@@ -6,7 +6,7 @@ sig
   sig
     type s
     val into : 'a t -> ('a,s) app
-    val out  : ('a,'s) app -> 'a t
+    val out  : ('a,s) app -> 'a t
   end
 
   functor Mk2 (type ('a,'b) t) :
