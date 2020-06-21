@@ -8,3 +8,4 @@ is
   higher.sml
   typeclass.sml
   examples.sml
+  lens.sml
