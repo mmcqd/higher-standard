@@ -24,9 +24,8 @@ This fails to type check because `cls` is _not_ polymorphic in the body of `won'
 functor MkCls (type ('a,'b,'c,'d,'e,'P) base) :
 sig
   type 'P cls
-  val into : ('a,'b,'c,'d,'e,'P) base -> 'P cls
-  val out  : 'P cls -> ('a,'b,'c,'d,'e,'P) base
-  val prj  : (('a,'b,'c','d,'e,'P) base -> 'f) -> 'P cls -> 'f
+  val instance : ('a,'b,'c,'d,'e,'P) base -> 'P cls
+  val & : 'P cls -> (('a,'b,'c','d,'e,'P) base -> 'f) -> 'f
 end
 ```
 Unfortunately this can be used to create objects that don't act like type classes, but it's meant to be used like so:
@@ -39,13 +38,13 @@ structure Functor =
 The first 5 type variables are intended for use anywhere in your type class, but you don't have to use all of them. The final `'f` is intended to be the type the class is constraining. If you need more than 5 type variables to write your class, the code can be rewritten to use as many as you like. Now `Functor.into` turns a record into a Functor instance, whose fields we can access with `Functor.prj`, i.e. `Functor.prj#fmap instance`. This allows writing fairly idiomatic functions with type class arguments:
 ```sml
 (*  <$ : 'f Functor.cls -> 'a -> ('b,'f) app -> ('a,'f) app *)
-fun <$ cls x = Functor.prj#fmap cls (const x)
+fun <$ cls x = Functor.&cls #fmap (const x)
 ```
 
 To use the `when` and `unless` examples from the original paper, assuming we've created a monad class:
 ```sml
 (*  when : 'm Monad.cls -> bool -> (unit,'m) app -> (unit,'m) app *)
-fun when cls b m = if b then m else Monad.prj#pure cls ()
+fun when cls b m = if b then m else Monad.&cls #pure ()
 
 (*  unless : 'm Monad.cls -> bool -> (unit,'m) app -> (unit,'m) app *)
 fun unless cls b m = when cls (not b) m

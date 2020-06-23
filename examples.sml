@@ -4,20 +4,20 @@ struct
   infixr $
   
   fun <$ cls x = let open Functor in 
-    prj#fmap cls (Fn.const x)
+    &cls #fmap (Fn.const x)
     end
 
   fun classes_are_actually_polymorphic cls f = let open Functor in
-    (prj#fmap cls (fn x => x+1) f,<$ cls #"w" f)
+    (&cls #fmap (fn x => x+1) f,<$ cls #"w" f)
     end
 
   fun addM cls a b = let open Monad in
-    prj#bind cls a (fn x =>
-    prj#bind cls b (fn y =>
-      prj#pure cls $ x+y))
+    &cls #bind a (fn x =>
+    &cls #bind b (fn y =>
+      &cls #pure $ x+y))
     end
   
-  fun when cls b m = if b then m else Monad.prj#pure cls ()
+  fun when cls b m = if b then m else Monad.&cls #pure ()
   fun unless cls b m = when cls (not b) m
 
   fun on (h,f) x y = h (f x) (f y)

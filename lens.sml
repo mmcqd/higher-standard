@@ -13,10 +13,10 @@ struct
   
   structure IdH = Higher.Mk1 (type 'a t = 'a id) 
 
-  val functorConst = fn () => Functor.into
+  val functorConst = fn () => Functor.instance
     { fmap = fn f => fn x => x }
 
-  val functorId = fn () => Functor.into
+  val functorId = fn () => Functor.instance
     { fmap = fn f => fn x => case IdH.out x of Id y => IdH.into $ Id $ f y }
 
   type ('s,'t,'a,'b,'f) lens = 
@@ -39,7 +39,7 @@ struct
 
   val lens : ('s -> 'a) -> ('s -> 'b -> 't) -> ('s,'t,'a,'b,'f) lens =
      fn get => fn set => fn cls => fn f => fn x =>
-       Functor.prj#fmap cls (set x) (f (get x))
+       Functor.&cls #fmap (set x) (f (get x))
   
   val L_1 : ('a * 'x,'b * 'x,'a,'b,'f) lens =
     fn x => lens (fn (a,_) => a) (fn (_,x) => fn b => (b,x)) x

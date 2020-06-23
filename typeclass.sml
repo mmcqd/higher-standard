@@ -36,21 +36,21 @@ struct
     )
 
 
-  val functorList = fn () => Functor.into
+  val functorList = fn () => Functor.instance
     {fmap = fn f => ListH.into o List.map f o ListH.out}
 
-  val functorOption = fn () => Functor.into
+  val functorOption = fn () => Functor.instance
     {fmap = fn f => OptionH.into o Option.map f o OptionH.out}
 
-  val functorEither = fn () => Functor.into
+  val functorEither = fn () => Functor.instance
     {fmap = fn f => fn x => 
               case EitherH.out x of
                 INL y => EitherH.into o INL $ f y
               | INR y => EitherH.into $ INR y}
 
 
-  val monadOption = fn () => Monad.into
-    { fmap = Functor.prj#fmap $ functorOption(),
+  val monadOption = fn () => Monad.instance
+    { fmap = Functor.&(functorOption()) #fmap,
       pure = OptionH.into o SOME,
       ap   = (fn f => fn x =>
               case (OptionH.out f,OptionH.out x) of
@@ -63,8 +63,8 @@ struct
     }
 
 
-  val monadEither = fn () => Monad.into
-    { fmap = Functor.prj#fmap $ functorEither(),
+  val monadEither = fn () => Monad.instance
+    { fmap = Functor.&(functorEither()) #fmap,
       pure = EitherH.into o INL,
       ap   = (fn f => fn x =>
               case (EitherH.out f,EitherH.out x) of
@@ -78,8 +78,8 @@ struct
               
     }
 
-  val monadList = fn () => Monad.into
-    { fmap = Functor.prj#fmap $ functorList(),
+  val monadList = fn () => Monad.instance
+    { fmap = Functor.&(functorList()) #fmap,
       pure = fn x => ListH.into [x],
       ap   = fn x => let
               fun ap fs xs = 

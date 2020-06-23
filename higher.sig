@@ -19,8 +19,7 @@ sig
   functor MkCls (type ('a,'b,'c,'d,'e,'P) base) :
   sig
     type 'P cls
-    val into : ('a,'b,'c,'d,'e,'P) base -> 'P cls
-    val out  : 'P cls -> ('a,'b,'c,'d,'e,'P) base
-    val prj  : (('a,'b,'c','d,'e,'P) base -> 'f) -> 'P cls -> 'f
+    val instance : ('a,'b,'c,'d,'e,'P) base -> 'P cls
+    val & : 'P cls -> (('a,'b,'c','d,'e,'P) base -> 'f) -> 'f
   end
 end

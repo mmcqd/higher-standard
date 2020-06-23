@@ -24,7 +24,8 @@ struct
   struct
     type 'P cls = unit
     open B
-    fun prj f c = f (out c)
+    val instance = into
+    fun & c f = f (out c)
   end
 
 end
