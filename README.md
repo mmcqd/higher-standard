@@ -10,7 +10,7 @@ with the type `('a,'f) app`, which represents `'a 'f`. In more concrete terms: `
 ```sml
 type 'f Functor = { fmap : forall 'a 'b . ('a -> 'b) -> ('a,'f) app -> ('b,'f) app }
 ```
-Unfortunately, SML lacks any first class polymorphism, so all type variable must be bound at the site of the type declaration, and not inside the record field. This results in the rather unsatisfying
+Unfortunately, SML lacks any first class polymorphism, so all type variables must be bound at the site of the type declaration, and not inside the record field. This results in the rather unsatisfying
 ```sml
 type ('a,'b,'f) Functor = { fmap : ('a -> 'b) -> ('a,'f) app -> ('b,'f) app }
 ```
