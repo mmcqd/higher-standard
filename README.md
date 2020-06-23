@@ -1,7 +1,8 @@
 # Higher Standard
 Higher kinded polymorphism in Standard ML!
 
-An attempt at translating some of https://github.com/ocamllabs/higher into SML.
+An attempt at translating some of Jeremy Yallop and Leo White's [higher](
+https://github.com/ocamllabs/higher) library into SML.
 
 Higher kinded polymorphism is implemented through defunctionalization. Instead of promoting type variables to
 allow abstraction over type constructors (anything of kind k -> * ), we _demote_ type constructor application 
