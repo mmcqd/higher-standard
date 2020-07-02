@@ -4,6 +4,8 @@ Higher kinded polymorphism in Standard ML!
 An attempt at translating some of Jeremy Yallop and Leo White's [higher](
 https://github.com/ocamllabs/higher) library into SML.
 
+DISCLAIMER: Due to what may be a bug in SML/NJ (or a bug in my code, honestly not sure which), some fairly standard operations cause crashes. See Issues for details.
+
 Higher kinded polymorphism is implemented through defunctionalization. Instead of promoting type variables to
 allow abstraction over type constructors (anything of kind k -> * ), we _demote_ type constructor application 
 with the type `('a,'f) app`, which represents `'a 'f`. In more concrete terms: `(int,list) app == int list`. To achieve this, we make `('a,'f) app` abstract, and then provide functors to construct a defunctionalized type constructor for a given real type constructor. These are Higher.Mk1 and Higher.Mk2, which can be easily generalized to MkN if desired. A central use case of abstracting over type constructors is allowing haskell style type class constraints on them. The original paper uses the ocaml object system to represent type classes, but SML has no such system. It does however have records. Ideally, we'd like to be able to do this:
